@@ -232,6 +232,43 @@ button.secondary {
   color: var(--secondary-link-color);
 }
 
+body.article p.button-container strong a.primary {
+  display: inline-block;
+  color: #fff;
+  background-color: #000;
+  padding: 0.938rem;
+  font-size: .875rem;
+  line-height: 1rem;
+  border-radius: 0;
+  font-family: var(--graphik-semibold);
+  min-width: 13.4rem;
+  text-decoration: none;
+  text-transform: none;
+  text-align: center;
+  border: 0;
+  white-space: nowrap;
+  margin: 0.938rem 0.625rem;
+  background-image: linear-gradient(to bottom,#337ab7 0,#265a88 100%);
+  background-repeat: repeat-x;
+}
+
+body.article p.button-container strong a.primary:hover,
+body.article p.button-container strong a.primary:focus {
+    background-color: #4a4a4a;
+    color: #fff;
+    background-position: 0 -15px;
+}
+
+body.article p.button-container strong a.primary:active {
+    outline: 0;
+    background-image: none;
+    /* stylelint-disable-next-line property-no-vendor-prefix */
+    -webkit-box-shadow: inset 0 3px 5px rgba(0 0 0 12.5%);
+    box-shadow: inset 0 3px 5px rgba(0 0 0 12.5%);
+    background-color: #265a88;
+    border-color: #245580;
+}
+
 main input {
   font-size: 1.25rem;
   width: 100%;
@@ -269,7 +306,7 @@ main blockquote p::after {
 
 main img {
   max-width: 100%;
-  width: auto;
+  width: 100%;
   height: auto;
 }
 
@@ -309,13 +346,48 @@ body.article main .section.abstract p.date {
   margin: 0;
 }
 
-body.article main .section.abstract h1 {
+body.article main .section h1 {
   text-align: center;
   font-family: var(--header-font-family-regular);
   font-weight: 700;
   font-size: 1rem;
   line-height: 1.6em;
   margin: 0;
+}
+
+body.article main h6 {
+  text-align: center;
+}
+
+body.article main h6 em {
+  text-align: center;
+  font-family: var(--header-font-family-regular);
+  font-weight: 100;
+  font-size: 12px;
+  line-height: 1.6em;
+}
+
+body.factsheet main h6 {
+  text-align: center;
+  font-size: 11px;
+  line-height: 9.2pt;
+  font-family: Arial, sans-serif;
+}
+
+body.article main .section.abstract h6 {
+  text-align: center;
+  font-family: var(--header-font-family-regular);
+  font-weight: 100;
+  font-size: 1rem;
+  line-height: 1.6em;
+  margin: 20px 0;
+}
+
+body.article main picture+em {
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+  text-align: center;
 }
 
 body.article main .section .article-end-divider {
@@ -338,6 +410,9 @@ body.article main .section .article-end-divider {
 
   body.article main {
     max-width: 1200px;
+
+    /* height of aside 450px and hero container height 160px, so setting the min height to 610px */
+    min-height: 610px;
     margin: auto;
     position: relative;
   }

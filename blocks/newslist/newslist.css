@@ -288,6 +288,7 @@
 }
 
 .newslist .newslist-container .newslist-header-container label {
+  display: block;
   font-family: var(--graphik-semibold);
   padding-left: 15px;
   margin-bottom: 5px;
@@ -295,6 +296,7 @@
   font-weight: 700;
   line-height: 50px;
   text-transform: uppercase;
+  text-align: right;
   color: #000;
 }
 
@@ -381,6 +383,7 @@
 
   .newslist .newslist-container .newslist-header-container form {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
   }
 

@@ -3,6 +3,7 @@ import {
   ANALYTICS_TEMPLATE_ZONE_BODY,
   ANALYTICS_MODULE_SEARCH_PAGINATION,
   ANALYTICS_MODULE_CONTENT,
+  ANALYTICS_MODULE_FACT,
   ANALYTICS_LINK_TYPE_CONTENT_MODULE,
   ANALYTICS_MODULE_YEAR_FILTER,
   ANALYTICS_LINK_TYPE_FILTER,
@@ -416,6 +417,7 @@ async function addPrevNextLinksToArticles() {
         nextArticle = window.articles[currentArticleIndex - 1];
         const a = await window.ffetchIterator.next();
         if (!a.done) {
+          window.articles.push(a.value);
           prevArticle = a.value;
         } else {
           prevArticle = '';
@@ -423,6 +425,15 @@ async function addPrevNextLinksToArticles() {
         break;
       }
     }
+  } else if (currentArticleIndex === queryIndex.length - 1) {
+    const a = await window.ffetchIterator.next();
+    if (!a.done) {
+      window.articles.push(a.value);
+      prevArticle = a.value;
+    } else {
+      prevArticle = '';
+    }
+    nextArticle = queryIndex[currentArticleIndex - 1];
   } else {
     prevArticle = queryIndex[currentArticleIndex + 1];
     nextArticle = queryIndex[currentArticleIndex - 1];
@@ -502,45 +513,63 @@ const centerArticleDivider = (main) => {
   });
 };
 
+const pdfLinkHandler = (link) => {
+  const href = link.getAttribute('href');
+  if (!href) {
+    return;
+  }
+  if (!href.includes('.pdf')) {
+    return;
+  }
+  link.setAttribute('target', '_blank');
+};
+
 function annotateArticleSections() {
   const template = getMetadata('template');
   if (template !== 'Article') {
     return;
   }
-  const articleSections = document.querySelectorAll('main > .section');
-
-  // eslint-disable-next-line no-restricted-syntax
-  for (const section of articleSections) {
-    const sectionText = section.innerText;
-    const isAbstract = ABSTRACT_REGEX.test(sectionText);
-    if (isAbstract) {
-      section.classList.add('abstract');
-      const h1 = section.querySelector('h1');
-      if (h1) {
-        const date = h1.previousSibling;
-        if (date) {
-          date.classList.add('date');
-        }
-      }
-      break;
+  // add abstract and date classes
+  const abstractSection = document.querySelector('main > .section:not(.hero-container)');
+  abstractSection.classList.add('abstract');
+  const h1 = abstractSection.querySelector('h1');
+  if (h1) {
+    const date = h1.previousSibling;
+    if (date) {
+      date.classList.add('date');
     }
   }
   // annotate links
+  const articleSections = document.querySelectorAll('main > .section');
   const excludeSections = ['hero-container', 'aside-container'];
   articleSections.forEach((section) => {
     const sectionClassList = Array.from(section.classList);
     if (sectionClassList.some((c) => excludeSections.includes(c))) {
       return;
     }
-    section.querySelectorAll('a').forEach((link) => {
-      annotateElWithAnalyticsTracking(
-        link,
-        link.innerText,
-        ANALYTICS_MODULE_CONTENT,
-        ANALYTICS_TEMPLATE_ZONE_BODY,
-        ANALYTICS_LINK_TYPE_CONTENT_MODULE,
-      );
-    });
+    if (window.location.pathname.startsWith('/help-faq')) {
+      section.querySelectorAll('a').forEach((link) => {
+        annotateElWithAnalyticsTracking(
+          link,
+          link.innerText,
+          ANALYTICS_MODULE_FACT,
+          ANALYTICS_TEMPLATE_ZONE_BODY,
+          ANALYTICS_LINK_TYPE_CONTENT_MODULE,
+        );
+        pdfLinkHandler(link);
+      });
+    } else {
+      section.querySelectorAll('a').forEach((link) => {
+        annotateElWithAnalyticsTracking(
+          link,
+          link.innerText,
+          ANALYTICS_MODULE_CONTENT,
+          ANALYTICS_TEMPLATE_ZONE_BODY,
+          ANALYTICS_LINK_TYPE_CONTENT_MODULE,
+        );
+        pdfLinkHandler(link);
+      });
+    }
   });
 }
 
