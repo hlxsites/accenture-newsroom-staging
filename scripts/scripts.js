@@ -513,15 +513,23 @@ const centerArticleDivider = (main) => {
   });
 };
 
-const pdfLinkHandler = (link) => {
-  const href = link.getAttribute('href');
-  if (!href) {
-    return;
-  }
-  if (!href.includes('.pdf')) {
-    return;
-  }
-  link.setAttribute('target', '_blank');
+const pdfLinkHandler = () => {
+  const sectionLinks = document.querySelectorAll('main > .section a');
+
+  const addTargetAttribute = (link) => {
+    const href = link.getAttribute('href');
+    if (!href) {
+      return;
+    }
+    if (!href.includes('.pdf')) {
+      return;
+    }
+    link.setAttribute('target', '_blank');
+  };
+
+  sectionLinks.forEach((link) => {
+    addTargetAttribute(link);
+  });
 };
 
 function annotateArticleSections() {
@@ -556,7 +564,6 @@ function annotateArticleSections() {
           ANALYTICS_TEMPLATE_ZONE_BODY,
           ANALYTICS_LINK_TYPE_CONTENT_MODULE,
         );
-        pdfLinkHandler(link);
       });
     } else {
       section.querySelectorAll('a').forEach((link) => {
@@ -567,7 +574,6 @@ function annotateArticleSections() {
           ANALYTICS_TEMPLATE_ZONE_BODY,
           ANALYTICS_LINK_TYPE_CONTENT_MODULE,
         );
-        pdfLinkHandler(link);
       });
     }
   });
@@ -652,6 +658,7 @@ async function loadEager(doc) {
     decorateMain(main);
     // article processing
     annotateArticleSections();
+    pdfLinkHandler();
     document.body.classList.add('appear');
     await waitForLCP(LCP_BLOCKS);
   }
@@ -795,8 +802,6 @@ async function loadLazy(doc) {
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
 
-  loadJQueryDateRangePicker();
-
   centerArticleDivider(main);
 
   // Add plugin listeners here
@@ -833,6 +838,7 @@ async function loadSemiDelayed() {
     document.dispatchEvent(event);
   }
   addPrevNextLinksToArticles();
+  loadJQueryDateRangePicker();
 }
 
 /**
